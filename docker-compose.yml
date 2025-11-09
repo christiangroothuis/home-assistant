@@ -17,7 +17,6 @@ services:
     restart: unless-stopped
     environment:
       - TZ=Europe/Amsterdam
-    network_mode: host
     ports:
       - "1883:1883"
       - "9001:9001"
@@ -36,13 +35,12 @@ services:
     environment:
       - MQTT_HOST=localhost
       - MQTT_PORT=1883
-      - MQTT_USERNAME=your_username
-      - MQTT_PASSWORD=your_password
       - TX_PIN=23
     depends_on:
       - mosquito
 
   pigpio:
+    build: ./pigpio
     container_name: pigpio
     restart: unless-stopped
     network_mode: host
