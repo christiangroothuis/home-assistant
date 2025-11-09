@@ -1,0 +1,50 @@
+services:
+  homeassistant:
+    container_name: homeassistant
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    volumes:
+      - /opt/docker/data/home-assistant/config:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Amsterdam
+    network_mode: host
+
+  mosquito:
+    container_name: mosquito
+    image: eclipse-mosquitto:2
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Amsterdam
+    network_mode: host
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - /opt/docker/data/mosquito/config:/mosquitto/config
+      - /opt/docker/data/mosquito/data:/mosquitto/data
+      - /opt/docker/data/mosquito/log:/mosquitto/log
+
+  cherubini:
+    build: ./cherubini
+    container_name: cherubini
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - /opt/docker/data/cherubini/remote.json:/app/remote.json
+    environment:
+      - MQTT_HOST=localhost
+      - MQTT_PORT=1883
+      - MQTT_USERNAME=your_username
+      - MQTT_PASSWORD=your_password
+      - TX_PIN=23
+    depends_on:
+      - mosquito
+
+  pigpio:
+    container_name: pigpio
+    restart: unless-stopped
+    network_mode: host
+    devices:
+      - /dev/gpiomem:/dev/gpiomem

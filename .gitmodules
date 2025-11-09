@@ -1,0 +1,3 @@
+[submodule "cherubini"]
+	path = cherubini
+	url = git@github.com:christiangroothuis/cherubini.git
