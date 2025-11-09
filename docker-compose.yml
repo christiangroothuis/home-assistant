@@ -11,8 +11,8 @@ services:
       - TZ=Europe/Amsterdam
     network_mode: host
 
-  mosquito:
-    container_name: mosquito
+  mosquitto:
+    container_name: mosquitto
     image: eclipse-mosquitto:2
     restart: unless-stopped
     environment:
@@ -21,9 +21,9 @@ services:
       - "1883:1883"
       - "9001:9001"
     volumes:
-      - /opt/docker/data/mosquito/config:/mosquitto/config
-      - /opt/docker/data/mosquito/data:/mosquitto/data
-      - /opt/docker/data/mosquito/log:/mosquitto/log
+      - /opt/docker/data/mosquitto/config:/mosquitto/config
+      - /opt/docker/data/mosquitto/data:/mosquitto/data
+      - /opt/docker/data/mosquitto/log:/mosquitto/log
 
   cherubini:
     build: ./cherubini
@@ -37,12 +37,5 @@ services:
       - MQTT_PORT=1883
       - TX_PIN=23
     depends_on:
-      - mosquito
+      - mosquitto
 
-  pigpio:
-    build: ./pigpio
-    container_name: pigpio
-    restart: unless-stopped
-    network_mode: host
-    devices:
-      - /dev/gpiomem:/dev/gpiomem
